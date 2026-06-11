@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use server"
 
 import z from "zod";
+import { loginUser } from "./loginUser";
 
 const registerValidationZodSchema = z
     .object({
@@ -72,15 +72,26 @@ export const registerPatient = async (_currentState: any, formData: any): Promis
         const res = await fetch("http://localhost:5000/api/v1/user/create-patient", {
             method: "POST",
             body: newFormData,
-        }).then(res => res.json())
+        })
+        // .then(res => res.json())
 
-        console.log("Response Data :  ", res);
+        const result = await res.json();
 
-        return res;
+        if (result.success) {
+            await loginUser(_currentState, formData);
+        }
+        // console.log("Response Data :  ", res);
 
-    } catch (error) {
+        return result;
+
+    } catch (error: any) {
+        if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+            throw error;
+        }
         console.log(error);
-        return { error: "Registration failed!" }
+        return {
+            success: false,
+            message: `${process.env.NODE_ENV === "development" ? error.message : "Login failed. You might have entered wrong email or password."}`
+        };
     }
-
 };

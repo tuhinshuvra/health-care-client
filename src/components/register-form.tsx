@@ -4,8 +4,9 @@
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet } from './ui/field';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { registerPatient } from '@/services/auth/registerPatient';
+import { toast } from 'sonner';
 
 const RegisterForm = () => {
     const [state, formAction, isPending] = useActionState(registerPatient, null);
@@ -20,7 +21,15 @@ const RegisterForm = () => {
             return null;
         }
     };
-    // console.log("Login State: ", state);
+    // console.log("Registration State: ", state);
+
+    useEffect(() => {
+        if (state && !state.success && state.message) {
+            toast.error(state.message);
+            // toast.success("Registration successful!");
+        }
+
+    }, [state]);
 
     return (
         <form action={formAction}>
@@ -28,7 +37,7 @@ const RegisterForm = () => {
                 <FieldSet>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
                         <Field>
-                            <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                            <FieldLabel htmlFor="name">
                                 Full Name
                             </FieldLabel>
                             <Input
@@ -46,7 +55,7 @@ const RegisterForm = () => {
                         </Field>
 
                         <Field>
-                            <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                            <FieldLabel htmlFor="email">
                                 Email
                             </FieldLabel>
                             <Input
@@ -66,7 +75,7 @@ const RegisterForm = () => {
                     <div className=''>
 
                         <Field>
-                            <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                            <FieldLabel htmlFor="address">
                                 Address
                             </FieldLabel>
                             <Input
@@ -86,7 +95,7 @@ const RegisterForm = () => {
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
                         <Field>
-                            <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                            <FieldLabel htmlFor="password">
                                 Password
                             </FieldLabel>
                             <Input

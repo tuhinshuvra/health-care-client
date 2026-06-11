@@ -1,25 +1,26 @@
 import LoginForm from '@/components/login-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-const LoginPage = () => {
+const ResetPasswordPage = () => {
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
-            <Card className="w-full max-w-md shadow-lg md:px-12 px-1">
+            <Card className="w-full max-w-md shadow-lg">
                 <CardHeader className="text-center">
                     <CardTitle className="text-3xl font-bold">
-                        Welcome Back
+                        Reset Password
                     </CardTitle>
                     <CardDescription>
-                        Enter your credentials to access your account
+                        Enter your new password to reset your password
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent>
-                    <LoginForm />
+                    {/* <LoginForm /> */}
+                    <h2>This is the Reset Password page</h2>
                 </CardContent>
             </Card>
         </div>
     );
 };
 
-export default LoginPage;
+export default ResetPasswordPage;

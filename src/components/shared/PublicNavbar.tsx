@@ -1,80 +1,77 @@
-"use client";
-
+import { getCookie } from "@/services/auth/tokenHandlers";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import LogOutButton from "./LogOutButton";
 
-const PublicNavbar = () => {
+const PublicNavbar = async () => {
     const navItems = [
-        { label: "Consultation", href: "/consultation" },
-        { label: "Health Plans", href: "/healthplans" },
-        { label: "Medicine", href: "/medicine" },
-        { label: "Diagnostics", href: "/diagnostics" },
-        { label: "NGOs", href: "/ngos" },
+        { href: "#", label: "Consultation" },
+        { href: "#", label: "Health Plans" },
+        { href: "#", label: "Medicine" },
+        { href: "#", label: "Diagnostics" },
+        { href: "#", label: "NGOs" },
     ];
 
+    const accessToken = await getCookie("accessToken");
+
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur  dark:bg-background/95">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                {/* Logo */}
-                <Link href="/" className="flex items-center">
-                    <span className="text-xl font-bold text-primary">
-                        Real HealthCare
-                    </span>
+                <Link href="/" className="flex items-center space-x-2">
+                    <span className="text-xl font-bold text-primary">PH Doc</span>
                 </Link>
 
-                {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-                    {navItems.map((item) => (
+                    {navItems.map((link) => (
                         <Link
-                            key={item.label}
-                            href={item.href}
+                            key={link.label}
+                            href={link.href}
                             className="text-foreground hover:text-primary transition-colors"
                         >
-                            {item.label}
+                            {link.label}
                         </Link>
                     ))}
                 </nav>
 
-
+                <div className="hidden md:flex items-center space-x-2">
+                    {accessToken ? (
+                        <LogOutButton />
+                    ) : (
+                        <Link href="/login">
+                            <Button>Login</Button>
+                        </Link>
+                    )}
+                </div>
 
                 {/* Mobile Menu */}
+
                 <div className="md:hidden">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline">
-                                <Menu />
-                            </Button>
+                            <Button variant="outline">Open Menu</Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w=[400px] p-4">
-                            <SheetTitle>Navigation Menu</SheetTitle>
-                            <nav className=" flex flex-col space-y-4 mt-8">
-                                {navItems.map((item) => (
+                        <SheetContent side="right" className="w-[300px] sm:w-[400px] p-4">
+                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                            <nav className="flex flex-col space-y-4 mt-8">
+                                {navItems.map((link) => (
                                     <Link
-                                        key={item.label}
-                                        href={item.href}
+                                        key={link.label}
+                                        href={link.href}
                                         className="text-lg font-medium"
                                     >
-                                        {item.label}
+                                        {link.label}
                                     </Link>
                                 ))}
+                                <div className="border-t pt-4 flex flex-col space-y-4">
+                                    <div className="flex justify-center"></div>
+                                    <Link href="/login" className="text-lg font-medium">
+                                        <Button>Login</Button>
+                                    </Link>
+                                </div>
                             </nav>
-                            <SheetFooter>
-                                {/* <Button type="submit">Save changes</Button> */}
-                                <SheetClose asChild>
-                                    <Button variant="outline">Close</Button>
-                                </SheetClose>
-                            </SheetFooter>
                         </SheetContent>
                     </Sheet>
-                </div>
-
-                {/* Desktop Login */}
-                <div className="hidden md:flex items-center">
-                    <Link href="/login">
-                        <Button>Login</Button>
-                    </Link>
                 </div>
             </div>
         </header>

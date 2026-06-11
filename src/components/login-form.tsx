@@ -4,31 +4,40 @@
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet } from './ui/field';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { loginUser } from '@/services/auth/loginUser';
+import { toast } from 'sonner';
 
-const LoginForm = () => {
+const LoginForm = ({ redirect }: { redirect?: string }) => {
 
     const [state, formAction, isPending] = useActionState(loginUser, null);
 
+    console.log("Login form State : ", state);
+
     const getFieldError = (fieldName: string) => {
         if (state && state?.errors) {
-            const error = state.errors.find(
-                (err: any) => err.field === fieldName
-            );
+            const error = state.errors.find((err: any) => err.field === fieldName);
             return error?.message ?? null;
         } else {
             return null;
         }
     };
-    console.log("Login State: ", state);
+
+
+    useEffect(() => {
+        if (state && !state.success && state.message) {
+            toast.error(state.message);
+            // toast.success("Login successful!");
+        }
+
+    }, [state]);
 
     return (
         <form action={formAction}>
             <FieldGroup>
                 <FieldSet>
                     <Field>
-                        <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                        <FieldLabel htmlFor="email">
                             Email
                         </FieldLabel>
                         <Input
@@ -46,7 +55,7 @@ const LoginForm = () => {
                     </Field>
 
                     <Field className=' mt-2'>
-                        <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                        <FieldLabel htmlFor="password">
                             Password
                         </FieldLabel>
                         <Input
