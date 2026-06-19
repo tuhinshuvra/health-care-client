@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute, UserRole } from './lib/auth-utils';
 import { getCookie } from './services/auth/tokenHandlers';
 
-
 export async function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
@@ -21,7 +20,6 @@ export async function proxy(request: NextRequest) {
             await deleteCookie("refreshToken");
             return NextResponse.redirect(new URL('/login', request.url));
         }
-
         userRole = verifiedToken.role;
     }
 
@@ -66,8 +64,6 @@ export async function proxy(request: NextRequest) {
 
     return NextResponse.next();
 }
-
-
 
 export const config = {
     matcher: [

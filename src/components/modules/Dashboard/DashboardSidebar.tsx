@@ -9,7 +9,7 @@ const DashboardSidebar = async () => {
     const userInfo = (await getUserInfo()) as UserInfo;
     const navItems: NavSection[] = getNavItemsByRole(userInfo.role);
 
-    console.log("DashboardSidebar : navItems ", navItems);
+    // console.log("DashboardSidebar : navItems ", navItems);
 
     const dashboardHome = getDefaultDashboardRoute(userInfo.role);
 

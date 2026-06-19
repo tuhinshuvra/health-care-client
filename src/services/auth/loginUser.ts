@@ -5,54 +5,35 @@ import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/li
 import { parse } from "cookie";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redirect } from "next/navigation";
-import z from "zod";
 import { setCookie } from "./tokenHandlers";
-
-const loginValidationZodSchema = z.object({
-    email: z.email({
-        message: "Email is required",
-    }),
-    password: z.string("Password is required").min(6, {
-        error: "Password is required and must be at least 6 characters long",
-    }).max(100, {
-        error: "Password must be at most 100 characters long",
-    }),
-});
+import { serverFetch } from "@/lib/server-fetch";
+import { zodValidators } from "@/lib/zodValidators";
+import { loginValidationZodSchema } from "@/zod/auth.validation";
 
 export const loginUser = async (_currentState: any, formData: any): Promise<any> => {
     try {
         const redirectTo = formData.get('redirect') || null;
         let accessTokenObject: null | any = null;
         let refreshTokenObject: null | any = null;
-        const loginData = {
+        const payload = {
             email: formData.get('email'),
             password: formData.get('password'),
         }
 
-        const validatedFields = loginValidationZodSchema.safeParse(loginData);
-
-        if (!validatedFields.success) {
-            return {
-                success: false,
-                errors: validatedFields.error.issues.map(issue => {
-                    return {
-                        field: issue.path[0],
-                        message: issue.message,
-                    }
-                })
-            }
+        if (zodValidators(payload, loginValidationZodSchema).success === false) {
+            return zodValidators(payload, loginValidationZodSchema);
         }
 
-        const res = await fetch("http://localhost:5000/api/v1/auth/login", {
-            method: "POST",
-            body: JSON.stringify(loginData),
+        const validatedPayload = zodValidators(payload, loginValidationZodSchema).data;
+
+        const res = await serverFetch.post("/auth/login", {
+            body: JSON.stringify(validatedPayload),
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         });
 
         const result = await res.json();
-
         const setCookieHeaders = res.headers.getSetCookie();
 
         if (setCookieHeaders && setCookieHeaders.length > 0) {
@@ -95,7 +76,6 @@ export const loginUser = async (_currentState: any, formData: any): Promise<any>
         });
         // console.log("NEXT JWT SECRET:", process.env.JWT_SECRET);
         const verifiedToken: JwtPayload | string = jwt.verify(accessTokenObject.accessToken, process.env.JWT_SECRET as string);
-
 
         if (typeof verifiedToken === "string") {
             throw new Error("Invalid token");

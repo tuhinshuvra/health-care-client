@@ -7,29 +7,18 @@ import { Button } from './ui/button';
 import { useActionState, useEffect } from 'react';
 import { loginUser } from '@/services/auth/loginUser';
 import { toast } from 'sonner';
+import InputFieldError from './shared/InputFieldError';
 
 const LoginForm = ({ redirect }: { redirect?: string }) => {
 
     const [state, formAction, isPending] = useActionState(loginUser, null);
-
     console.log("Login form State : ", state);
-
-    const getFieldError = (fieldName: string) => {
-        if (state && state?.errors) {
-            const error = state.errors.find((err: any) => err.field === fieldName);
-            return error?.message ?? null;
-        } else {
-            return null;
-        }
-    };
-
 
     useEffect(() => {
         if (state && !state.success && state.message) {
             toast.error(state.message);
             // toast.success("Login successful!");
         }
-
     }, [state]);
 
     return (
@@ -37,38 +26,15 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
             <FieldGroup>
                 <FieldSet>
                     <Field>
-                        <FieldLabel htmlFor="email">
-                            Email
-                        </FieldLabel>
-                        <Input
-                            id="email"
-                            name="email"
-                            type='email'
-                            placeholder="example@email.com"
-                        // required
-                        />
-                        {getFieldError("email") && (
-                            <FieldDescription className=' text-red-600'>
-                                {getFieldError("email")}
-                            </FieldDescription>
-                        )}
+                        <FieldLabel htmlFor="email"> Email </FieldLabel>
+                        <Input id="email" name="email" type='email' placeholder="example@email.com" />
+                        <InputFieldError field="email" state={state} />
                     </Field>
 
                     <Field className=' mt-2'>
-                        <FieldLabel htmlFor="password">
-                            Password
-                        </FieldLabel>
-                        <Input
-                            id="password"
-                            name="password"
-                            type='password'
-                        // required
-                        />
-                        {getFieldError("password") && (
-                            <FieldDescription className=' text-red-600'>
-                                {getFieldError("password")}
-                            </FieldDescription>
-                        )}
+                        <FieldLabel htmlFor="password"> Password </FieldLabel>
+                        <Input id="password" name="password" type='password' />
+                        <InputFieldError field="password" state={state} />
                     </Field>
                 </FieldSet>
                 <FieldSeparator />
