@@ -14,7 +14,7 @@ interface ManagementPageHeaderProps {
     };
     children?: React.ReactNode;
 }
-const ManagementPageHeader = ({
+export const ManagementPageHeader = ({
     title,
     description,
     action,

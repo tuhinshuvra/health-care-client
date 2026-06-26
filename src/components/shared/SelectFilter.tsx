@@ -2,8 +2,8 @@
 
 import React, { useTransition } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useRouter } from 'next/router';
-import { useSearchParams } from 'next/navigation';
+// import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 interface SelectFilterProps {

@@ -1,5 +1,8 @@
 const PatientDashboardPage = () => {
-    return <div>PatientDashboardPage</div>;
+    return <div>PatientDashboardPage
+
+        Hari OM
+    </div>;
 };
 
 export default PatientDashboardPage;

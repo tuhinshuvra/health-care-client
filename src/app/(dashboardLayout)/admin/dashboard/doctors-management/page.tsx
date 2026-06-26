@@ -1,5 +1,52 @@
-const DoctorDashboardPage = () => {
-    return <div>DoctorDashboardPage</div>;
+import DoctorsManagementHeader from "@/components/modules/Admin/DoctorsManagement/DoctorsManagementHeader";
+import DoctorsTable from "@/components/modules/Admin/DoctorsManagement/DoctorsTable";
+import RefreshButton from "@/components/shared/RefreshButton";
+import SearchFilter from "@/components/shared/SearchFilter";
+import SelectFilter from "@/components/shared/SelectFilter";
+import TablePagination from "@/components/shared/TablePagination";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { queryStringFormatter } from "@/lib/formatters";
+import { getDoctors } from "@/services/admin/doctorsManagement";
+import { getSpecialties } from "@/services/admin/specialtiesManagement";
+import { ISpecialty } from "@/types/specialties.interface";
+import { Suspense } from "react";
+
+const AdminDoctorsManagementPage = async ({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+) => {
+    const searchParamObj = await searchParams;
+    const queryString = queryStringFormatter(searchParamObj);
+    const specialtiesResult = await getSpecialties();
+    const doctorsResult = await getDoctors(queryString);
+    const totalPages = Math.ceil(doctorsResult?.meta?.total / doctorsResult?.meta?.limit);
+
+    return (
+        <div className="space-y-6">
+            <DoctorsManagementHeader
+                specialties={specialtiesResult.data}
+            // doctors={doctorsResult.data}
+            />
+            <div className="flex space-x-2">
+                <SearchFilter paramName="searchTerm" placeholder="Search doctors..." />
+                <SelectFilter
+                    paramName="specialty" // ?specialty="Cardiology"
+                    options={specialtiesResult.data.map((specialty: ISpecialty) => ({
+                        label: specialty.title,
+                        value: specialty.id,
+                    }))}
+                    placeholder="Filter by specialty"
+                />
+                <RefreshButton />
+            </div>
+            <Suspense fallback={<TableSkeleton columns={2} rows={10} />}>
+                <DoctorsTable doctors={doctorsResult.data} specialties={specialtiesResult.data} />
+                <TablePagination currentPage={doctorsResult?.meta?.page} totalPages={totalPages} />
+            </Suspense>
+        </div>
+    );
 };
 
-export default DoctorDashboardPage;
+export default AdminDoctorsManagementPage;

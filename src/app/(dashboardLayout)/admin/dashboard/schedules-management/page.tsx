@@ -1,5 +1,10 @@
+
 const AdminSchedulesManagementPage = () => {
-    return <div>AdminSchedulesManagementPage</div>;
+    return (
+        <div>
+            AdminSchedulesManagementPage
+        </div>
+    );
 };
 
 export default AdminSchedulesManagementPage;
