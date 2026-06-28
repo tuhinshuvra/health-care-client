@@ -1,4 +1,4 @@
-import SpecialtiesTable from "@/components/modules/Admin/SpecialtiesManagement/SpecialitesTable";
+import SpecialtiesTable from "@/components/modules/Admin/SpecialtiesManagement/SpecialtiesTable";
 import SpecialtiesManagementHeader from "@/components/modules/Admin/SpecialtiesManagement/SpecialtiesManagementHeader";
 import RefreshButton from "@/components/shared/RefreshButton";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
